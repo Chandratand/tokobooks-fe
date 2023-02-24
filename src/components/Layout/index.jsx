@@ -171,7 +171,12 @@ export default function Layout({ children }) {
                     minHeight: 48,
                     justifyContent: open ? "initial" : "center",
                     borderRadius: "8px",
-                    backgroundColor: router.pathname === "/" && menu.href === "/" ? "#E6F4F1" : router.pathname.startsWith(menu.href) && menu.href !== "/" && "#E6F4F1",
+                    backgroundColor:
+                      router.pathname === "/" && menu.href === "/"
+                        ? "#E6F4F1"
+                        : router.pathname.startsWith(menu.href) &&
+                          menu.href !== "/" &&
+                          "#E6F4F1",
                     margin: "4px",
                     px: 2.5,
                   }}
@@ -185,7 +190,10 @@ export default function Layout({ children }) {
                   >
                     {menu.icon}
                   </ListItemIcon>
-                  <ListItemText primary={menu.label} sx={{ opacity: open ? 1 : 0 }} />
+                  <ListItemText
+                    primary={menu.label}
+                    sx={{ opacity: open ? 1 : 0 }}
+                  />
                 </ListItemButton>
               </Link>
             </ListItem>

@@ -177,7 +177,7 @@ export async function getServerSideProps({ req }) {
     );
     categoryList = cat.data.data;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
   // Pass data to the page via props
   return { props: { categoryList, token: jwtToken } };
