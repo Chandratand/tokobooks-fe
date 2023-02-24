@@ -1,13 +1,11 @@
 import AddIcon from "@mui/icons-material/Add";
 import {
-  Alert,
   Box,
   Button,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
-  Snackbar,
   TextField,
   Typography,
 } from "@mui/material";
@@ -19,10 +17,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import Layout from "../../components/Layout";
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNjc3MjUzODMwLCJleHAiOjE2NzcyNTc0MzB9.2DzqiohsvlS6WEYXNhSVtgkbjUn0j1qIDlxOHeREw6w";
-
-const Create = ({ categoryList }) => {
+const Create = ({ categoryList, token }) => {
   const [form, setForm] = useState({
     title: "",
     author: "",
@@ -50,7 +45,16 @@ const Create = ({ categoryList }) => {
         }
       );
       if (res.data.data) {
-        toast(res.data.message);
+        toast.success(res.data.message);
+        setForm({
+          title: "",
+          author: "",
+          image: "Images",
+          category: null,
+          published: null,
+          price: "",
+          stock: "",
+        });
       }
     } catch (err) {
       toast.error(err.message);
@@ -68,6 +72,7 @@ const Create = ({ categoryList }) => {
             label="Title"
             fullWidth
             margin="dense"
+            value={form.title}
             onChange={handleChange}
           />
           <TextField
@@ -75,6 +80,7 @@ const Create = ({ categoryList }) => {
             label="Author"
             fullWidth
             margin="dense"
+            value={form.author}
             onChange={handleChange}
           />
           <FormControl fullWidth margin="dense">
@@ -84,6 +90,7 @@ const Create = ({ categoryList }) => {
               name="category"
               id="demo-simple-select"
               label="Category"
+              value={form.category}
               onChange={handleChange}
             >
               {categoryList?.map((item) => {
@@ -116,6 +123,7 @@ const Create = ({ categoryList }) => {
             fullWidth
             type="number"
             margin="dense"
+            value={form.price}
             onChange={handleChange}
           />
           <TextField
@@ -123,6 +131,7 @@ const Create = ({ categoryList }) => {
             label="Stock"
             fullWidth
             type="number"
+            value={form.stock}
             margin="dense"
             onChange={handleChange}
           />
@@ -142,7 +151,18 @@ const Create = ({ categoryList }) => {
 
 export default Create;
 
-export async function getServerSideProps() {
+export async function getServerSideProps({ req }) {
+  const { token } = req.cookies;
+  const jwtToken = atob(token);
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
   // Fetch data from external API
   let categoryList = [];
 
@@ -151,7 +171,7 @@ export async function getServerSideProps() {
       `https://tokobooks-production-4868.up.railway.app/api/v1/categories`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${jwtToken}`,
         },
       }
     );
@@ -160,5 +180,5 @@ export async function getServerSideProps() {
     console.log(error);
   }
   // Pass data to the page via props
-  return { props: { categoryList } };
+  return { props: { categoryList, token: jwtToken } };
 }

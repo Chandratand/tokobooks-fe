@@ -245,14 +245,20 @@ const Books = ({ bookList, categoryList }) => {
 
 export default Books;
 
-const token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiSm9obiBEb2UiLCJ1c2VySWQiOjEsInJvbGUiOiJhZG1pbiIsImVtYWlsIjoiYWRtaW5AZ21haWwuY29tIiwiaWF0IjoxNjc3MjUzODMwLCJleHAiOjE2NzcyNTc0MzB9.2DzqiohsvlS6WEYXNhSVtgkbjUn0j1qIDlxOHeREw6w";
-
 export async function getServerSideProps(context) {
+  const { token } = context.req.cookies;
+  const jwtToken = atob(token);
+
+  if (!token) {
+    return {
+      redirect: {
+        destination: "/login",
+        permanent: false,
+      },
+    };
+  }
   // Fetch data from external API
   const { title, category } = context.query;
-
-  console.log("first", category);
   let bookList = [];
   let categoryList = [];
 
@@ -263,7 +269,7 @@ export async function getServerSideProps(context) {
       }${category ? `?category=${category}` : ""}`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${jwtToken}`,
         },
       }
     );
@@ -271,14 +277,14 @@ export async function getServerSideProps(context) {
       `https://tokobooks-production-4868.up.railway.app/api/v1/categories`,
       {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${jwtToken}`,
         },
       }
     );
     bookList = res.data.data;
     categoryList = cat.data.data;
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
   // Pass data to the page via props
   return { props: { bookList, categoryList } };
