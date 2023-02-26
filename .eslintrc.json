@@ -29,6 +29,8 @@
 		"arrow-body-style": "off",
 		"react/function-component-definition": "off",
 		"react/no-array-index-key": "off",
-		"react/jsx-props-no-spreading": "off"
+		"react/jsx-props-no-spreading": "off",
+		"react-hooks/exhaustive-deps": "off",
+		"no-plusplus": "off"
 	}
 }

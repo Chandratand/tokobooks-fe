@@ -153,7 +153,7 @@ export default Create;
 
 export async function getServerSideProps({ req }) {
   const { token } = req.cookies;
-  const jwtToken = atob(token);
+  const jwtToken = atob(token) || null;
 
   if (!token) {
     return {

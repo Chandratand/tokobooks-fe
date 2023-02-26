@@ -75,7 +75,17 @@ const Books = ({ bookList, categoryList }) => {
   const router = useRouter();
 
   const rows = bookList.map((item) => {
-    const action = <Button variant="contained">Update</Button>;
+    const action = (
+      <Button
+        variant="contained"
+        sx={{ margin: 1 }}
+        onClick={() => {
+          router.push(`books/update/${item.id}`);
+        }}
+      >
+        Update
+      </Button>
+    );
     return createData(
       item.id,
       item.title,
@@ -218,16 +228,20 @@ const Books = ({ bookList, categoryList }) => {
                       hover
                       role="checkbox"
                       tabIndex={-1}
-                      key={row.code}
-                      style={{ backgroundColor: index % 2 === 0 && "#f9f9f9" }}
+                      key={row.id}
+                      style={{
+                        backgroundColor: index % 2 === 0 && "#f9f9f9",
+                      }}
                     >
                       {columns.map((column) => {
                         const value = row[column.id];
                         return (
                           <TableCell key={column.id} align={column.align}>
-                            {column.format && typeof value === "number"
-                              ? column.format(value)
-                              : value}
+                            <Link href={`/books/${row.id}`}>
+                              {column.format && typeof value === "number"
+                                ? column.format(value)
+                                : value}
+                            </Link>
                           </TableCell>
                         );
                       })}
@@ -247,7 +261,7 @@ export default Books;
 
 export async function getServerSideProps(context) {
   const { token } = context.req.cookies;
-  const jwtToken = atob(token);
+  const jwtToken = atob(token || null);
 
   if (!token) {
     return {
@@ -284,7 +298,7 @@ export async function getServerSideProps(context) {
     bookList = res.data.data;
     categoryList = cat.data.data;
   } catch (error) {
-    // console.log(error);
+    // s
   }
   // Pass data to the page via props
   return { props: { bookList, categoryList } };

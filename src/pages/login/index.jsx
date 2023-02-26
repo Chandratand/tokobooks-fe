@@ -43,7 +43,7 @@ export default function Login() {
       toast.success("Login Berhasil");
       const { token } = res.data.data;
       const tokenBase64 = btoa(token);
-      Cookies.set("token", tokenBase64, { expires: 1 });
+      Cookies.set("token", tokenBase64, { expires: 1 / 24 });
       router.push("/");
     } catch (error) {
       toast.error(error.response.data.message || error.message);
